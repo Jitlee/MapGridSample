@@ -89,19 +89,31 @@ namespace MapGridSample
 
         private void DrawLevel1Grid()
         {
-            int sqrt1 = (int)Math.Sqrt(LEVEL1_GRID);
-            double lv1CellWidth = CanvasGrid.Width / sqrt1;
-            double lv1CellHeight = CanvasGrid.Height / sqrt1;
+            double lv1CellWidth = CanvasGrid.Width / LEVEL1_GRID;
+            double lv1CellHeight = CanvasGrid.Height / LEVEL1_GRID;
+            double offsetX = _offsetPositioning.Longitude * WIDTH / (BOUNDING_BOX_X_MAX - BOUNDING_BOX_X_MIN);
+            double offsetY = _offsetPositioning.Latitude * HEIGHT / (BOUNDING_BOX_Y_MAX - BOUNDING_BOX_Y_MIN);
+
+            int beginX = (int)Math.Ceiling(- offsetX / lv1CellWidth);
+            int beginY = (int)Math.Ceiling(- offsetY / lv1CellHeight);
+
+            offsetX %= lv1CellWidth;
+            offsetY %= lv1CellHeight;
+
+            double x1 = 0d;
+            double x2 = WIDTH;
+            double y1 = 0d;
+            double y2 = HEIGHT;
 
             this.GridCanvas.Children.Clear();
 
-            for (int i = 0; i <= sqrt1; i++)
+            for (int i = 0; i <= LEVEL1_GRID; i++)
             {
-                var y = i * lv1CellHeight;
+                var y = i * lv1CellHeight + offsetY;
                 this.GridCanvas.Children.Add(new Line()
                 {
-                    X1 = 0,
-                    X2 = 720,
+                    X1 = x1,
+                    X2 = x2,
                     Y1 = y,
                     Y2 = y,
                     Stroke = _level1Brush,
@@ -110,15 +122,15 @@ namespace MapGridSample
                 });
             }
 
-            for (int i = 0; i <= sqrt1; i++)
+            for (int i = 0; i <= LEVEL1_GRID; i++)
             {
-                var x = i * lv1CellWidth;
+                var x = i * lv1CellWidth + offsetX;
                 this.GridCanvas.Children.Add(new Line()
                 {
                     X1 = x,
                     X2 = x,
-                    Y1 = 0,
-                    Y2 = 360,
+                    Y1 = y1,
+                    Y2 = y2,
                     Stroke = _level1Brush,
                     StrokeThickness = 1,
                     Opacity = 0.5
@@ -155,19 +167,19 @@ namespace MapGridSample
             {
                 case 1:
                     positioning.Longitude = (BOUNDING_BOX_X_MAX - BOUNDING_BOX_X_MIN) * vector.X / WIDTH;
-                    positioning.Latitude = (BOUNDING_BOX_Y_MIN - BOUNDING_BOX_Y_MAX) * vector.Y / HEIGHT;
+                    positioning.Latitude = (BOUNDING_BOX_Y_MAX - BOUNDING_BOX_Y_MIN) * vector.Y / HEIGHT;
                     break;
                 case 2:
                     positioning.Longitude = (BOUNDING_BOX_X_MAX - BOUNDING_BOX_X_MIN) * vector.X / (WIDTH * LEVEL1_GRID);
-                    positioning.Latitude = (BOUNDING_BOX_Y_MIN - BOUNDING_BOX_Y_MAX) * vector.Y / (HEIGHT * LEVEL1_GRID);
+                    positioning.Latitude = (BOUNDING_BOX_Y_MAX - BOUNDING_BOX_Y_MIN) * vector.Y / (HEIGHT * LEVEL1_GRID);
                     break;
                 case 3:
                     positioning.Longitude = (BOUNDING_BOX_X_MAX - BOUNDING_BOX_X_MIN) * vector.X / (WIDTH * LEVEL1_GRID * LEVEL2_GRID);
-                    positioning.Latitude = (BOUNDING_BOX_Y_MIN - BOUNDING_BOX_Y_MAX) * vector.Y / (HEIGHT * LEVEL1_GRID * LEVEL2_GRID);
+                    positioning.Latitude = (BOUNDING_BOX_Y_MAX - BOUNDING_BOX_Y_MIN) * vector.Y / (HEIGHT * LEVEL1_GRID * LEVEL2_GRID);
                     break;
                 case 4:
                     positioning.Longitude = (BOUNDING_BOX_X_MAX - BOUNDING_BOX_X_MIN) * vector.X / (WIDTH * LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID);
-                    positioning.Latitude = (BOUNDING_BOX_Y_MIN - BOUNDING_BOX_Y_MAX) * vector.Y / (HEIGHT * LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID);
+                    positioning.Latitude = (BOUNDING_BOX_Y_MAX - BOUNDING_BOX_Y_MIN) * vector.Y / (HEIGHT * LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID);
                     break;
             };
             return positioning;
@@ -203,6 +215,8 @@ namespace MapGridSample
             var vector = e.GetPosition(CanvasGrid) - _originPoint;
 
             _offsetPositioning += TranformVector(vector);
+
+            DrawGrid();
 
             GridCanvas.ClearValue(Canvas.LeftProperty);
             GridCanvas.ClearValue(Canvas.TopProperty);

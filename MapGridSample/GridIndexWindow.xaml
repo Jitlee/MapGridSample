@@ -5,7 +5,8 @@
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
-        MouseWheel="Window_MouseWheel">
+        MouseWheel="Window_MouseWheel"
+        Background="Gray">
     <Grid
         x:Name="RootLayout">
         <Grid
@@ -13,7 +14,8 @@
             x:Name="CanvasGrid"
             Cursor="Hand"
             PreviewMouseLeftButtonDown="CanvasGrid_PreviewMouseLeftButtonDown">
-            <Canvas>
+            <Canvas
+                Background="White">
                 <Canvas
                     x:Name="GridCanvas"
                     Background="Transparent"/>

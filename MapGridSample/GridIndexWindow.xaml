@@ -10,7 +10,7 @@
     <Grid
         x:Name="RootLayout">
         <Grid
-            Margin="15"
+            Margin="30"
             x:Name="CanvasGrid"
             Cursor="Hand"
             PreviewMouseLeftButtonDown="CanvasGrid_PreviewMouseLeftButtonDown">
@@ -37,7 +37,8 @@
         <StackPanel
             VerticalAlignment="Top"
             HorizontalAlignment="Center"
-            Orientation="Horizontal">
+            Orientation="Horizontal"
+            Background="Azure">
             <TextBlock
                 Text="形状:"
                 VerticalAlignment="Center"/>

@@ -48,6 +48,7 @@ namespace MapGridSample
             GridCanvas.Height = HEIGHT;
             ShapCanvas.Width = WIDTH;
             ShapCanvas.Height = HEIGHT;
+            CanvasGrid.Clip = new RectangleGeometry(new Rect(0, 0, WIDTH, HEIGHT));
 
             DrawGrid();
         }
@@ -56,16 +57,21 @@ namespace MapGridSample
 
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            var point = e.GetPosition(GridCanvas);
+            Point point = e.GetPosition(GridCanvas);
+            Vector vector = point - new Point();
             if (e.Delta > 0 && _level < 4)
             {
+                _offsetPositioning -= TranformVector(vector);
                 _level++;
+                _offsetPositioning += TranformVector(vector);
                 DrawGrid();
                 GridLevelTextBlock.Text = _level.ToString();
             }
             else if (e.Delta < 0 && _level > 1)
             {
+                _offsetPositioning -= TranformVector(vector);
                 _level--;
+                _offsetPositioning += TranformVector(vector);
                 DrawGrid();
                 GridLevelTextBlock.Text = _level.ToString();
             }
@@ -73,69 +79,102 @@ namespace MapGridSample
 
         private void DrawGrid()
         {
+            this.GridCanvas.Children.Clear();
             switch (_level)
             {
                 case 1:
-                    DrawLevel1Grid();
+                    DrawLevelGrid(1, 1, LEVEL1_GRID, _level1Brush);
                     break;
                 case 2:
+                    DrawLevelGrid(1, LEVEL1_GRID, LEVEL2_GRID, _level2Brush);
+                    DrawLevelGrid(LEVEL1_GRID, 1, LEVEL1_GRID, _level1Brush);
                     break;
                 case 3:
+                    DrawLevelGrid(1, LEVEL1_GRID * LEVEL2_GRID, LEVEL3_GRID, _level3Brush);
+                    DrawLevelGrid(LEVEL2_GRID, LEVEL1_GRID, LEVEL2_GRID, _level2Brush);
+                    DrawLevelGrid(LEVEL1_GRID * LEVEL2_GRID, 1, LEVEL1_GRID, _level1Brush);
                     break;
                 case 4:
+                    DrawLevelGrid(1, LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID, LEVEL4_GRID, _level4Brush);
+                    DrawLevelGrid(LEVEL3_GRID, LEVEL1_GRID * LEVEL2_GRID, LEVEL3_GRID, _level3Brush);
+                    DrawLevelGrid(LEVEL2_GRID * LEVEL3_GRID, LEVEL1_GRID, LEVEL2_GRID, _level2Brush);
+                    DrawLevelGrid(LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID, 1, LEVEL1_GRID, _level1Brush);
                     break;
             };
         }
 
-        private void DrawLevel1Grid()
+        private void DrawLevelGrid(int flag1, int flag2, int levelGrid, Brush brush)
         {
-            double lv1CellWidth = CanvasGrid.Width / LEVEL1_GRID;
-            double lv1CellHeight = CanvasGrid.Height / LEVEL1_GRID;
-            double offsetX = _offsetPositioning.Longitude * WIDTH / (BOUNDING_BOX_X_MAX - BOUNDING_BOX_X_MIN);
-            double offsetY = _offsetPositioning.Latitude * HEIGHT / (BOUNDING_BOX_Y_MAX - BOUNDING_BOX_Y_MIN);
+            double lv1CellWidth = CanvasGrid.Width * flag1 / levelGrid;
+            double lv1CellHeight = CanvasGrid.Height * flag1 / levelGrid;
+            double offsetX = _offsetPositioning.Longitude * WIDTH * flag1 * flag2 / (BOUNDING_BOX_X_MAX - BOUNDING_BOX_X_MIN);
+            double offsetY = _offsetPositioning.Latitude * HEIGHT * flag1 * flag2 / (BOUNDING_BOX_Y_MAX - BOUNDING_BOX_Y_MIN);
 
-            int beginX = (int)Math.Ceiling(- offsetX / lv1CellWidth);
-            int beginY = (int)Math.Ceiling(- offsetY / lv1CellHeight);
-
-            offsetX %= lv1CellWidth;
-            offsetY %= lv1CellHeight;
+            double beginX = offsetX % lv1CellWidth;
+            double beginY = offsetY % lv1CellHeight;
 
             double x1 = 0d;
             double x2 = WIDTH;
             double y1 = 0d;
             double y2 = HEIGHT;
 
-            this.GridCanvas.Children.Clear();
-
-            for (int i = 0; i <= LEVEL1_GRID; i++)
+            List<TextBlock> textBlocks = new List<TextBlock>();
+            for (int i = 0; i <= levelGrid; i++)
             {
-                var y = i * lv1CellHeight + offsetY;
+                var y = i * lv1CellHeight + beginY;
                 this.GridCanvas.Children.Add(new Line()
                 {
                     X1 = x1,
                     X2 = x2,
                     Y1 = y,
                     Y2 = y,
-                    Stroke = _level1Brush,
-                    StrokeThickness = 1,
-                    Opacity = 0.5
+                    Stroke = brush,
+                    StrokeThickness = flag1,
                 });
+
+                var textBlock = new TextBlock();
+                textBlock.TextAlignment = TextAlignment.Center;
+                textBlock.FontSize = 15d + flag1;
+                textBlock.Height = textBlock.FontSize * 1.1;
+                textBlock.Width = textBlock.FontSize * 1.2;
+                textBlock.Background = brush;
+                textBlock.Foreground = Brushes.White;
+                textBlock.Text = (Math.Floor(-offsetY / lv1CellHeight + i) % levelGrid).ToString();
+                Canvas.SetLeft(textBlock, x1);
+                Canvas.SetTop(textBlock, y - textBlock.Height / 2d);
+                textBlocks.Add(textBlock);
             }
 
-            for (int i = 0; i <= LEVEL1_GRID; i++)
+            for (int i = 0; i <= levelGrid; i++)
             {
-                var x = i * lv1CellWidth + offsetX;
+                var x = i * lv1CellWidth + beginX ;
                 this.GridCanvas.Children.Add(new Line()
                 {
                     X1 = x,
                     X2 = x,
                     Y1 = y1,
                     Y2 = y2,
-                    Stroke = _level1Brush,
-                    StrokeThickness = 1,
-                    Opacity = 0.5
+                    Stroke = brush,
+                    StrokeThickness = flag1,
                 });
+
+                var textBlock = new TextBlock();
+                textBlock.FontSize = 15d + flag1;
+                textBlock.Height = textBlock.FontSize * 1.1;
+                textBlock.Background = brush;
+                textBlock.Foreground = Brushes.White;
+                textBlock.Text = (Math.Floor(- offsetX / lv1CellWidth + i) % levelGrid).ToString();
+                textBlock.TextAlignment = TextAlignment.Center;
+                Canvas.SetLeft(textBlock, x);
+                Canvas.SetTop(textBlock, y1);
+                textBlocks.Add(textBlock);
             }
+
+            foreach (TextBlock textBlock in textBlocks)
+            {
+                this.GridCanvas.Children.Add(textBlock);
+            }
+            textBlocks.Clear();
         }
 
         #endregion

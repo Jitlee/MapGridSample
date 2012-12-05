@@ -48,7 +48,6 @@ namespace MapGridSample
         public readonly static double Level3LatitudeCellSpan = LatitudeSpan / (LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID);
         public readonly static double Level4LongitudeCellSpan = LongitudeSpan / (LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID * LEVEL4_GRID);
         public readonly static double Level4LatitudeCellSpan = LatitudeSpan / (LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID * LEVEL4_GRID);
-        
         #endregion
     }
 }

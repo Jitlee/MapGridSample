@@ -22,13 +22,12 @@
             Cursor="Hand"
             Grid.Row="1"
             Margin="15"
-            Background="White"
+            Background="#FFF0F0F0"
             PreviewMouseLeftButtonDown="CanvasGrid_PreviewMouseLeftButtonDown">
             <Canvas
                 x:Name="RootCanvas">
                 <Canvas
-                    x:Name="GridCanvas"
-                    Background="Transparent"/>
+                    x:Name="GridCanvas"/>
                 <Canvas
                     x:Name="ShapCanvas"
                     IsHitTestVisible="False">

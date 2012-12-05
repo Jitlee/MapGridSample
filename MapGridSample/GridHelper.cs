@@ -48,7 +48,8 @@ namespace MapGridSample
                 var minColumn = (int)Math.Ceiling(Math.Min(startPositioning.Longitude, endPositioning.Longitude) / GridConfig.Level4LongitudeCellSpan);
                 for (int column = minColumn; column <= maxColumn; column++)
                 {
-                    var longitude = column * GridConfig.Level4LongitudeCellSpan;
+                    // 多加 1/2 的值是为了 避免 刚好在边界点因为小数点误差而计算错误
+                    var longitude = (column + 0.00001d) * GridConfig.Level4LongitudeCellSpan;
                     var latitude = k * longitude + b;
                     yield return GetPointGridIndex(new Positioning() { Latitude = latitude, Longitude = longitude });
                     yield return GetPointGridIndex(new Positioning() { Latitude = latitude, Longitude = longitude - GridConfig.Level4LongitudeCellSpan });
@@ -63,7 +64,8 @@ namespace MapGridSample
 
                 for (int row = minRow; row <= maxRow; row++)
                 {
-                    var latitude = row * GridConfig.Level4LatitudeCellSpan;
+                    // 多加 1/2 的值是为了 避免 刚好在边界点因为小数点误差而计算错误
+                    var latitude = (row + 0.00001d) * GridConfig.Level4LatitudeCellSpan;
                     var longitude = isInfinity ? endPositioning.Longitude : ((latitude - b) / k);
                     yield return GetPointGridIndex(new Positioning() { Latitude = latitude, Longitude = longitude });
                     yield return GetPointGridIndex(new Positioning() { Latitude = latitude - GridConfig.Level4LatitudeCellSpan, Longitude = longitude });

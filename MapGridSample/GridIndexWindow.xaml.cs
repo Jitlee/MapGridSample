@@ -22,6 +22,7 @@ namespace MapGridSample
         const double WIDTH = 720d;
         const double HEIGHT = 360d;
 
+        private readonly Brush _containsBackground = new SolidColorBrush(Color.FromArgb(0x85, 0x00, 0x80, 0x00));
         private readonly Brush _level1Brush = new SolidColorBrush(Color.FromArgb(0xff, 0xDC, 0x79, 0x1F));
         private readonly Brush _level2Brush = new SolidColorBrush(Color.FromArgb(0xff, 0x72, 0x87, 0xC8));
         private readonly Brush _level3Brush = new SolidColorBrush(Color.FromArgb(0xff, 0xF8, 0x31, 0x0E));
@@ -86,26 +87,26 @@ namespace MapGridSample
             switch (_level)
             {
                 case 1:
-                    DrawLabel(1, 1, GridConfig.LEVEL1_GRID);
+                    DrawLabel(1, 1, GridConfig.LEVEL1_GRID, GridConfig.Level1LongitudeCellSpan, GridConfig.Level1LatitudeCellSpan);
                     DrawShape(1, 1, GridConfig.LEVEL1_GRID, 1d);
                     DrawLevelGrid(1, 1, GridConfig.LEVEL1_GRID, _level1Brush, 1d);
                     break;
                 case 2:
-                    DrawLabel(1, GridConfig.LEVEL1_GRID, GridConfig.LEVEL2_GRID);
-                    DrawShape(1, GridConfig.LEVEL1_GRID, GridConfig.LEVEL2_GRID, 4d);
+                    DrawLabel(1, GridConfig.LEVEL1_GRID, GridConfig.LEVEL2_GRID, GridConfig.Level2LongitudeCellSpan, GridConfig.Level2LatitudeCellSpan);
+                    DrawShape(1, GridConfig.LEVEL1_GRID, GridConfig.LEVEL2_GRID, 2d);
                     DrawLevelGrid(1, GridConfig.LEVEL1_GRID, GridConfig.LEVEL2_GRID, _level2Brush, 1d);
                     DrawLevelGrid(GridConfig.LEVEL1_GRID, 1, GridConfig.LEVEL1_GRID, _level1Brush, 4d);
                     break;
                 case 3:
-                    DrawLabel(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID, GridConfig.LEVEL3_GRID);
-                    DrawShape(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID, GridConfig.LEVEL3_GRID, 8d);
+                    DrawLabel(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID, GridConfig.LEVEL3_GRID, GridConfig.Level3LongitudeCellSpan, GridConfig.Level3LatitudeCellSpan);
+                    DrawShape(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID, GridConfig.LEVEL3_GRID, 3d);
                     DrawLevelGrid(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID, GridConfig.LEVEL3_GRID, _level3Brush, 1d);
                     DrawLevelGrid(GridConfig.LEVEL2_GRID, GridConfig.LEVEL1_GRID, GridConfig.LEVEL2_GRID, _level2Brush, 4d);
                     DrawLevelGrid(GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID, 1, GridConfig.LEVEL1_GRID, _level1Brush, 8d);
                     break;
                 case 4:
-                    DrawLabel(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID, GridConfig.LEVEL4_GRID);
-                    DrawShape(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID, GridConfig.LEVEL4_GRID, 16d);
+                    DrawLabel(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID, GridConfig.LEVEL4_GRID, GridConfig.Level4LongitudeCellSpan, GridConfig.Level4LatitudeCellSpan);
+                    DrawShape(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID, GridConfig.LEVEL4_GRID, 4d);
                     DrawLevelGrid(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID, GridConfig.LEVEL4_GRID, _level4Brush, 1d);
                     DrawLevelGrid(GridConfig.LEVEL3_GRID, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID, GridConfig.LEVEL3_GRID, _level3Brush, 4d);
                     DrawLevelGrid(GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID, GridConfig.LEVEL1_GRID, GridConfig.LEVEL2_GRID, _level2Brush, 8d);
@@ -156,7 +157,7 @@ namespace MapGridSample
             }
         }
 
-        private void DrawLabel(int flag1, int flag2, int levelGrid)
+        private void DrawLabel(int flag1, int flag2, int levelGrid, double longitudeCellWidth, double latitudeCellHeight)
         {
             double cellWidth = WIDTH * flag1 / levelGrid;
             double cellHeight = HEIGHT * flag1 / levelGrid;
@@ -164,80 +165,88 @@ namespace MapGridSample
             double offsetY = _offsetPositioning.Latitude * HEIGHT * flag1 * flag2 / GridConfig.LatitudeSpan;
             double beginX = offsetX % cellWidth;
             double beginY = offsetY % cellHeight;
-            double longitudeCellWidth = GridConfig.LongitudeSpan / (flag2 * levelGrid);
-            double latitudeCellHeight = GridConfig.LatitudeSpan / (flag2 * levelGrid);
 
+            Positioning positioning = new Positioning();
             for(int row = -1; row <= levelGrid + 1;row++)
             {
                 double y = row * cellHeight + beginY;
-                double latitude = -_offsetPositioning.Latitude + row * latitudeCellHeight;
                 for (int col = -1; col < levelGrid + 1; col++)
                 {
                     double x = col * cellWidth + beginX;
-                    double longitude = -_offsetPositioning.Longitude + col * longitudeCellWidth;
-                    Border border = new Border();
-                    StackPanel stackPanel = new StackPanel();
-                    stackPanel.Orientation = Orientation.Horizontal;
-                    stackPanel.VerticalAlignment = VerticalAlignment.Center;
-                    stackPanel.HorizontalAlignment = HorizontalAlignment.Center;
-                    stackPanel.Children.Add(new TextBlock() { Text = "(" });
+                    bool isContains = false;
+                    // 多加 1/2 的值是为了 避免 刚好在边界点因为小数点误差而计算错误
+                    positioning = TranformPositioning(x - offsetX + cellWidth / 2d, y - offsetY + cellHeight / 2d); 
 
-                    double lv1Row = (_offsetPositioning.Latitude > 0 ? Math.Ceiling(latitude / GridConfig.Level1LatitudeCellSpan) : Math.Floor(latitude / GridConfig.Level1LatitudeCellSpan));
-                    double lv1Col = (_offsetPositioning.Longitude > 0 ? Math.Ceiling(longitude / GridConfig.Level1LongitudeCellSpan) : Math.Floor(longitude / GridConfig.Level1LongitudeCellSpan));
-                    double lv1Index = (lv1Row * GridConfig.LEVEL1_GRID + lv1Col + 1);
-                    if (lv1Row < 0 || lv1Row >= GridConfig.LEVEL1_GRID
-                        || lv1Col < 0 || lv1Col >= GridConfig.LEVEL1_GRID)
+                    if (positioning.Latitude > 0d
+                        && positioning.Longitude > 0d
+                        && positioning.Latitude < GridConfig.LatitudeSpan
+                        && positioning.Longitude < GridConfig.LongitudeSpan)
                     {
-                        continue;
-                    }
-                    stackPanel.Children.Add(new TextBlock() { Text = lv1Index.ToString(), Foreground = _level1Brush });
+                        StackPanel stackPanel = new StackPanel();
+                        stackPanel.Orientation = Orientation.Horizontal;
+                        stackPanel.VerticalAlignment = VerticalAlignment.Center;
+                        stackPanel.HorizontalAlignment = HorizontalAlignment.Center;
+                        stackPanel.Children.Add(new TextBlock() { Text = "(" });
 
-                    if (_level > 1)
-                    {
-                        double lv2Row = (_offsetPositioning.Latitude > 0 ? Math.Ceiling(latitude / GridConfig.Level2LatitudeCellSpan) : Math.Floor(latitude / GridConfig.Level2LatitudeCellSpan)) % GridConfig.LEVEL2_GRID;
-                        double lv2Col = (_offsetPositioning.Longitude > 0 ? Math.Ceiling(longitude / GridConfig.Level2LongitudeCellSpan) : Math.Floor(longitude / GridConfig.Level2LongitudeCellSpan)) % GridConfig.LEVEL2_GRID;
-                        double lv2Index = (lv2Row * GridConfig.LEVEL2_GRID + lv2Col + 1);
-                        if (lv2Row < 0 || lv2Row >= GridConfig.LEVEL2_GRID
-                            || lv2Col < 0 || lv2Col >= GridConfig.LEVEL2_GRID)
+                        int lv1Index = positioning.TranformGridIndex(GridConfig.LEVEL1_GRID, GridConfig.Level1LongitudeCellSpan, GridConfig.Level1LatitudeCellSpan);
+
+                        stackPanel.Children.Add(new TextBlock() { Text = lv1Index.ToString(), Foreground = _level1Brush });
+
+                        if (_level > 1)
                         {
-                            continue;
-                        }
-                        stackPanel.Children.Add(new TextBlock() { Text = ", " });
-                        stackPanel.Children.Add(new TextBlock() { Text = lv2Index.ToString(), Foreground = _level2Brush });
-                        if (_level > 2)
-                        {
-                            double lv3Row = (_offsetPositioning.Latitude > 0 ? Math.Ceiling(latitude / GridConfig.Level3LatitudeCellSpan) : Math.Floor(latitude / GridConfig.Level3LatitudeCellSpan)) % GridConfig.LEVEL3_GRID;
-                            double lv3Col = (_offsetPositioning.Longitude > 0 ? Math.Ceiling(longitude / GridConfig.Level3LongitudeCellSpan) : Math.Floor(longitude / GridConfig.Level3LongitudeCellSpan)) % GridConfig.LEVEL3_GRID;
-                            double lv3Index = (lv3Row * GridConfig.LEVEL3_GRID + lv3Col + 1);
-                            if (lv3Row < 0 || lv3Row >= GridConfig.LEVEL3_GRID
-                                || lv3Col < 0 || lv3Col >= GridConfig.LEVEL3_GRID)
-                            {
-                                continue;
-                            }
+                            int lv2Index = positioning.TranformGridIndex(GridConfig.LEVEL2_GRID, GridConfig.Level2LongitudeCellSpan, GridConfig.Level2LatitudeCellSpan);
                             stackPanel.Children.Add(new TextBlock() { Text = ", " });
-                            stackPanel.Children.Add(new TextBlock() { Text = lv3Index.ToString(), Foreground = _level3Brush });
-                            if (_level > 3)
+                            stackPanel.Children.Add(new TextBlock() { Text = lv2Index.ToString(), Foreground = _level2Brush });
+                            if (_level > 2)
                             {
-                                double lv4Row = (_offsetPositioning.Latitude > 0 ? Math.Ceiling(latitude / GridConfig.Level4LatitudeCellSpan) : Math.Floor(latitude / GridConfig.Level4LatitudeCellSpan)) % GridConfig.LEVEL4_GRID;
-                                double lv4Col = (_offsetPositioning.Longitude > 0 ? Math.Ceiling(longitude / GridConfig.Level4LongitudeCellSpan) : Math.Floor(longitude / GridConfig.Level4LongitudeCellSpan)) % GridConfig.LEVEL4_GRID;
-                                double lv4Index = (lv4Row * GridConfig.LEVEL4_GRID + lv4Col + 1);
-                                if (lv4Row < 0 || lv4Row >= GridConfig.LEVEL4_GRID
-                                    || lv4Col < 0 || lv4Col >= GridConfig.LEVEL4_GRID)
-                                {
-                                    continue;
-                                }
+                                int lv3Index = positioning.TranformGridIndex(GridConfig.LEVEL3_GRID, GridConfig.Level3LongitudeCellSpan, GridConfig.Level3LatitudeCellSpan);
+
                                 stackPanel.Children.Add(new TextBlock() { Text = ", " });
-                                stackPanel.Children.Add(new TextBlock() { Text = lv4Index.ToString(), Foreground = _level4Brush });
+                                stackPanel.Children.Add(new TextBlock() { Text = lv3Index.ToString(), Foreground = _level3Brush });
+                                if (_level > 3)
+                                {
+                                    int lv4Index = positioning.TranformGridIndex(GridConfig.LEVEL4_GRID, GridConfig.Level4LongitudeCellSpan, GridConfig.Level4LatitudeCellSpan);
+
+                                    stackPanel.Children.Add(new TextBlock() { Text = ", " });
+                                    stackPanel.Children.Add(new TextBlock() { Text = lv4Index.ToString(), Foreground = _level4Brush });
+
+                                    if (_gridIndexes.Any(g => g.Index1 == lv1Index && g.Index2 == lv2Index && g.Index3 == lv3Index && g.Index4 == lv4Index))
+                                    {
+                                        isContains = true;
+                                    }
+                                }
+                                else if (_gridIndexes.Any(g => g.Index1 == lv1Index && g.Index2 == lv2Index && g.Index3 == lv3Index))
+                                {
+                                    isContains = true;
+                                }
+                            }
+                            else if (_gridIndexes.Any(g => g.Index1 == lv1Index && g.Index2 == lv2Index))
+                            {
+                                isContains = true;
                             }
                         }
+                        else if(_gridIndexes.Any(g=> g.Index1 == lv1Index))
+                        {
+                            isContains = true;
+                        }
+                        stackPanel.Children.Add(new TextBlock() { Text = ")" });
+
+                        Border border = new Border();
+                        border.Child = stackPanel;
+                        border.Height = cellHeight;
+                        border.Width = cellWidth;
+                        border.SetValue(Canvas.LeftProperty, x);
+                        border.SetValue(Canvas.TopProperty, y);
+                        if (isContains)
+                        {
+                            border.Background = _containsBackground;
+                        }
+                        else
+                        {
+                            border.Background = Brushes.White;
+                        }
+                        GridCanvas.Children.Add(border);
                     }
-                    stackPanel.Children.Add(new TextBlock() { Text = ")" });
-                    border.Child = stackPanel;
-                    border.Height = cellHeight;
-                    border.Width = cellWidth;
-                    border.SetValue(Canvas.LeftProperty, x);
-                    border.SetValue(Canvas.TopProperty, y);
-                    GridCanvas.Children.Add(border);
                 }
             }
         }
@@ -451,6 +460,8 @@ namespace MapGridSample
             Canvas.SetTop(TestEllipse, _originPoint.Y - _level * 2d);
             MoveRadioButton.IsChecked = true;
             _gridIndexes.Add(GridHelper.GetPointGridIndex(_ellipsePositioning));
+
+            DrawGrid();
         }
 
         #endregion
@@ -479,17 +490,20 @@ namespace MapGridSample
             CanvasGrid.PreviewMouseLeftButtonDown += CanvasGrid_PreviewMouseLeftButtonDown;
             MoveRadioButton.IsChecked = true;
 
+            TestPolyline.Points.RemoveAt(TestPolyline.Points.Count - 1);
             foreach (Point point in TestPolyline.Points)
             {
                 _polylinePositionings.Add(TranformPositioning(point) - _offsetPositioning);
             }
 
-            var gridIndexes = GridHelper.GetPolyLineRegion(_polylinePositionings);
+            var gridIndexes = GridHelper.GetPolyLineRegion(_polylinePositionings).OrderBy(p => p.Index1).ThenBy(p => p.Index2).ThenBy(p => p.Index3).ThenBy(p => p.Index4);
             
             foreach (var gridIndex in gridIndexes)
             {
                 _gridIndexes.Add(gridIndex);
             }
+
+            DrawGrid();
         }
 
         #endregion

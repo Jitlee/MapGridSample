@@ -9,10 +9,19 @@
         Background="Gray">
     <Grid
         x:Name="RootLayout">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
         <Grid
-            Margin="30"
             x:Name="CanvasGrid"
             Cursor="Hand"
+            Grid.Row="1"
+            Margin="15"
             PreviewMouseLeftButtonDown="CanvasGrid_PreviewMouseLeftButtonDown">
             <Canvas
                 Background="White">
@@ -22,6 +31,10 @@
                 <Canvas
                     x:Name="ShapCanvas"
                     IsHitTestVisible="False">
+                    <Ellipse
+                        x:Name="TestEllipse"
+                        Fill="Black"
+                        Opacity="0"/>
                     <Polyline
                         x:Name="TestPolyline"
                         Stroke="Black"
@@ -51,6 +64,13 @@
                 VerticalAlignment="Center"
                 Checked="MoveRadioButton_Checked"/>
             <RadioButton
+                x:Name="PointRadioButton"
+                Content="画点"
+                Margin="5"
+                GroupName="Shap"
+                VerticalAlignment="Center"
+                Checked="PointRadioButton_Checked"/>
+            <RadioButton
                 x:Name="LineRadioButton"
                 Content="画线"
                 Margin="5"
@@ -72,5 +92,10 @@
                 Text="1"
                 VerticalAlignment="Center"/>
         </StackPanel>
+        <ListBox
+            x:Name="GridIndexesListBox"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            ItemsSource="{Binding GridIndexes}"/>
     </Grid>
 </Window>

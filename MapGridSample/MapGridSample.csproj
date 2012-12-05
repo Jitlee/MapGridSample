@@ -76,6 +76,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GridConfig.cs" />
+    <Compile Include="GridHelper.cs" />
+    <Compile Include="GridIndex.cs" />
+    <Compile Include="Positioning.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

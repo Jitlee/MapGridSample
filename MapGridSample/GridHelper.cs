@@ -24,70 +24,54 @@ namespace MapGridSample
 
         #region 获取线的空间索引
 
-        //private static IEnumerable<Point> GetPolygonRegion(PointCollection points)
-        //{
-        //    var maxX = Math.Floor(points.Max(p => p.X) / GRID_SIZE);
-        //    var maxY = Math.Floor(points.Max(p => p.Y) / GRID_SIZE);
-        //    var minX = Math.Floor(points.Min(p => p.X) / GRID_SIZE);
-        //    var minY = Math.Floor(points.Min(p => p.Y) / GRID_SIZE);
+        public static IEnumerable<GridIndex> GetPolyLineRegion(IList<Positioning> positionings)
+        {
+            var result = new List<GridIndex>();
+            var prev = positionings.First();
+            for (int i = 1; i < positionings.Count; i++)
+            {
+                result.AddRange(GetLineRegion(prev, positionings[i]));
+                prev = positionings[i];
+            }
+            return result.Distinct();
+        }
 
-        //    for (double x = minX; x <= maxX; x++)
-        //    {
-        //        for (double y = minY; y <= maxY; y++)
-        //        {
-        //            yield return new Point(x, y);
-        //        }
-        //    }
-        //}
+        private static IEnumerable<GridIndex> GetLineRegion(Positioning startPositioning, Positioning endPositioning)
+        {
+            //  一次函数公式: kx + b = y
+            var k = (startPositioning.Latitude - endPositioning.Latitude) / (startPositioning.Longitude - endPositioning.Longitude);
+            var b = startPositioning.Latitude - k * startPositioning.Longitude;
 
-        //private static IEnumerable<Point> GetPolyLineRegion(PointCollection points)
-        //{
-        //    var result = new List<Point>();
-        //    var prev = points.First();
-        //    for (int i = 1; i < points.Count; i++)
-        //    {
-        //        result.AddRange(GetLineRegion(prev, points[i]));
-        //        prev = points[i];
-        //    }
-        //    return result.Distinct();
-        //}
+            if (!double.IsInfinity(k))
+            {
+                var maxColumn = (int)Math.Floor(Math.Max(startPositioning.Longitude, endPositioning.Longitude) / GridConfig.Level4LongitudeCellSpan);
+                var minColumn = (int)Math.Ceiling(Math.Min(startPositioning.Longitude, endPositioning.Longitude) / GridConfig.Level4LongitudeCellSpan);
+                for (int column = minColumn; column <= maxColumn; column++)
+                {
+                    var longitude = column * GridConfig.Level4LongitudeCellSpan;
+                    var latitude = k * longitude + b;
+                    yield return GetPointGridIndex(new Positioning() { Latitude = latitude, Longitude = longitude });
+                    yield return GetPointGridIndex(new Positioning() { Latitude = latitude, Longitude = longitude - GridConfig.Level4LongitudeCellSpan });
+                }
+            }
 
-        //private static IEnumerable<Point> GetLineRegion(Point startPoint, Point endPoint)
-        //{
-        //    //  一次函数公式: kx + b = y
-        //    var k = (startPoint.Y - endPoint.Y) / (startPoint.X - endPoint.X);
-        //    var b = startPoint.Y - k * startPoint.X;
+            if (k != 0)
+            {
+                var maxRow = (int)Math.Floor((Math.Max(startPositioning.Latitude, endPositioning.Latitude) / GridConfig.Level4LatitudeCellSpan));
+                var minRow = (int)Math.Ceiling(Math.Min(startPositioning.Latitude, endPositioning.Latitude) / GridConfig.Level4LatitudeCellSpan);
+                var isInfinity = double.IsInfinity(k);
 
-        //    if (!double.IsInfinity(k))
-        //    {
-        //        var maxX = Math.Floor(Math.Max(startPoint.X, endPoint.X) / GRID_SIZE);
-        //        var minX = Math.Ceiling(Math.Min(startPoint.X, endPoint.X) / GRID_SIZE);
-        //        for (double x = minX; x <= maxX; x++)
-        //        {
-        //            var y = Math.Floor((k * x * GRID_SIZE + b) / GRID_SIZE);
-        //            yield return new Point(x, y);
-        //            yield return new Point(x - 1, y);
-        //        }
-        //    }
-
-        //    if (k != 0)
-        //    {
-        //        var maxY = Math.Floor((Math.Max(startPoint.Y, endPoint.Y) / GRID_SIZE));
-        //        var minY = Math.Ceiling(Math.Min(startPoint.Y, endPoint.Y) / GRID_SIZE);
-        //        var isInfinity = double.IsInfinity(k);
-        //        var fixedX = Math.Floor(endPoint.X / GRID_SIZE);
-
-        //        for (double y = minY; y <= maxY; y++)
-        //        {
-        //            var x = isInfinity ? fixedX : Math.Floor((y * GRID_SIZE - b) / (k * GRID_SIZE));
-        //            yield return new Point(x, y);
-        //            yield return new Point(x, y - 1);
-        //        }
-        //    }
-
-        //    yield return new Point(Math.Floor(startPoint.X / GRID_SIZE), Math.Floor(startPoint.Y / GRID_SIZE));
-        //    yield return new Point(Math.Floor(endPoint.X / GRID_SIZE), Math.Floor(endPoint.Y / GRID_SIZE));
-        //}
+                for (int row = minRow; row <= maxRow; row++)
+                {
+                    var latitude = row * GridConfig.Level4LatitudeCellSpan;
+                    var longitude = isInfinity ? endPositioning.Longitude : ((latitude - b) / k);
+                    yield return GetPointGridIndex(new Positioning() { Latitude = latitude, Longitude = longitude });
+                    yield return GetPointGridIndex(new Positioning() { Latitude = latitude - GridConfig.Level4LatitudeCellSpan, Longitude = longitude });
+                }
+            }
+            yield return GetPointGridIndex(startPositioning);
+            yield return GetPointGridIndex(endPositioning);
+        }
 
         #endregion
     }

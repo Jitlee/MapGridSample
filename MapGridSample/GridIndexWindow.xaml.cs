@@ -40,13 +40,16 @@ namespace MapGridSample
         public GridIndexWindow()
         {
             InitializeComponent();
-            CanvasGrid.Width = WIDTH;
-            CanvasGrid.Height = HEIGHT;
+
+            RootCanvas.Width = WIDTH;
+            RootCanvas.Height = HEIGHT;
             GridCanvas.Width = WIDTH;
             GridCanvas.Height = HEIGHT;
             ShapCanvas.Width = WIDTH;
             ShapCanvas.Height = HEIGHT;
-            CanvasGrid.Clip = new RectangleGeometry(new Rect(0, 0, WIDTH, HEIGHT));
+            GridIndexesListBox.Height = HEIGHT + 120;
+            RootCanvas.SetValue(MarginProperty, new Thickness(30d));
+            CanvasGrid.Clip = new RectangleGeometry(new Rect(0, 0, WIDTH + 60d, HEIGHT + 60d));
             DrawGrid();
             GridIndexesListBox.DataContext = this;
         }
@@ -113,8 +116,8 @@ namespace MapGridSample
 
         private void DrawLevelGrid(int flag1, int flag2, int levelGrid, Brush brush, double thickness)
         {
-            double cellWidth = CanvasGrid.Width * flag1 / levelGrid;
-            double cellHeight = CanvasGrid.Height * flag1 / levelGrid;
+            double cellWidth = WIDTH * flag1 / levelGrid;
+            double cellHeight = HEIGHT * flag1 / levelGrid;
             double offsetX = _offsetPositioning.Longitude * WIDTH * flag1 * flag2 / GridConfig.LongitudeSpan;
             double offsetY = _offsetPositioning.Latitude * HEIGHT * flag1 * flag2 / GridConfig.LatitudeSpan;
             double beginX = offsetX % cellWidth;
@@ -124,7 +127,7 @@ namespace MapGridSample
             double y1 = -HEIGHT;
             double y2 = 2d * HEIGHT;
 
-            for (int i = -levelGrid; i <= levelGrid * 2; i++)
+            for (int i = -1; i <= levelGrid + 1; i++)
             {
                 double y = i * cellHeight + beginY;
                 this.GridCanvas.Children.Add(new Line()
@@ -138,7 +141,7 @@ namespace MapGridSample
                 });
             }
 
-            for (int i = -levelGrid; i <= levelGrid * 2; i++)
+            for (int i = -1; i <= levelGrid + 1; i++)
             {
                 double x = i * cellWidth + beginX;
                 this.GridCanvas.Children.Add(new Line()
@@ -155,8 +158,8 @@ namespace MapGridSample
 
         private void DrawLabel(int flag1, int flag2, int levelGrid)
         {
-            double cellWidth = CanvasGrid.Width * flag1 / levelGrid;
-            double cellHeight = CanvasGrid.Height * flag1 / levelGrid;
+            double cellWidth = WIDTH * flag1 / levelGrid;
+            double cellHeight = HEIGHT * flag1 / levelGrid;
             double offsetX = _offsetPositioning.Longitude * WIDTH * flag1 * flag2 / GridConfig.LongitudeSpan;
             double offsetY = _offsetPositioning.Latitude * HEIGHT * flag1 * flag2 / GridConfig.LatitudeSpan;
             double beginX = offsetX % cellWidth;
@@ -164,11 +167,11 @@ namespace MapGridSample
             double longitudeCellWidth = GridConfig.LongitudeSpan / (flag2 * levelGrid);
             double latitudeCellHeight = GridConfig.LatitudeSpan / (flag2 * levelGrid);
 
-            for(int row = -levelGrid; row<= 2 * levelGrid;row++)
+            for(int row = -1; row <= levelGrid + 1;row++)
             {
                 double y = row * cellHeight + beginY;
                 double latitude = -_offsetPositioning.Latitude + row * latitudeCellHeight;
-                for (int col = -levelGrid; col < 2 * levelGrid; col++)
+                for (int col = -1; col < levelGrid + 1; col++)
                 {
                     double x = col * cellWidth + beginX;
                     double longitude = -_offsetPositioning.Longitude + col * longitudeCellWidth;
@@ -263,8 +266,8 @@ namespace MapGridSample
 
         private void DrawHighlightRectangle(int flag1, int flag2, int levelGrid, Brush brush)
         {
-            double cellWidth = CanvasGrid.Width * flag1 / levelGrid;
-            double cellHeight = CanvasGrid.Height * flag1 / levelGrid;
+            double cellWidth = WIDTH * flag1 / levelGrid;
+            double cellHeight = HEIGHT * flag1 / levelGrid;
             double offsetX = _offsetPositioning.Longitude * WIDTH * flag1 * flag2 / GridConfig.LongitudeSpan;
             double offsetY = _offsetPositioning.Latitude * HEIGHT * flag1 * flag2 / GridConfig.LatitudeSpan;
             double beginX = offsetX % cellWidth;
@@ -365,7 +368,7 @@ namespace MapGridSample
         {
             CanvasGrid.CaptureMouse();
 
-            _originPoint = e.GetPosition(CanvasGrid);
+            _originPoint = e.GetPosition(RootCanvas);
 
             switch (_operation)
             {
@@ -407,7 +410,7 @@ namespace MapGridSample
 
         private void MoveCanvasGrid_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            Point point = e.GetPosition(CanvasGrid);
+            Point point = e.GetPosition(RootCanvas);
             double offsetX = point.X - _originPoint.X;
             double offsetY = point.Y - _originPoint.Y;
             Canvas.SetLeft(GridCanvas, offsetX);
@@ -422,7 +425,7 @@ namespace MapGridSample
             CanvasGrid.MouseMove -= MoveCanvasGrid_PreviewMouseMove;
             CanvasGrid.PreviewMouseLeftButtonUp -= MoveCanvasGrid_PreviewMouseLeftButtonUp;
 
-            var vector = e.GetPosition(CanvasGrid) - _originPoint;
+            var vector = e.GetPosition(RootCanvas) - _originPoint;
 
             _offsetPositioning += TranformPositioning(vector);
 
@@ -456,13 +459,13 @@ namespace MapGridSample
 
         private void DrawLineCanvasGrid_PreviewMouseLeftButtonDown(object sender, MouseEventArgs e)
         {
-            Point point = e.GetPosition(CanvasGrid);
+            Point point = e.GetPosition(RootCanvas);
             TestPolyline.Points.Add(point);
         }
 
         private void DrawLineCanvasGrid_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            Point point = e.GetPosition(CanvasGrid);
+            Point point = e.GetPosition(RootCanvas);
             TestPolyline.Points.RemoveAt(TestPolyline.Points.Count - 1);
             TestPolyline.Points.Add(point);
         }
@@ -479,6 +482,13 @@ namespace MapGridSample
             foreach (Point point in TestPolyline.Points)
             {
                 _polylinePositionings.Add(TranformPositioning(point) - _offsetPositioning);
+            }
+
+            var gridIndexes = GridHelper.GetPolyLineRegion(_polylinePositionings);
+            
+            foreach (var gridIndex in gridIndexes)
+            {
+                _gridIndexes.Add(gridIndex);
             }
         }
 

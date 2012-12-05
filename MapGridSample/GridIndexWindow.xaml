@@ -22,9 +22,10 @@
             Cursor="Hand"
             Grid.Row="1"
             Margin="15"
+            Background="White"
             PreviewMouseLeftButtonDown="CanvasGrid_PreviewMouseLeftButtonDown">
             <Canvas
-                Background="White">
+                x:Name="RootCanvas">
                 <Canvas
                     x:Name="GridCanvas"
                     Background="Transparent"/>
@@ -79,7 +80,7 @@
                 Checked="LineRadioButton_Checked"/>
             <RadioButton
                 x:Name="PolygonRadioButton"
-                Content="画多变形"
+                Content="画多边形"
                 Margin="5"
                 GroupName="Shap"
                 VerticalAlignment="Center"

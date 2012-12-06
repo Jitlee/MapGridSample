@@ -32,6 +32,7 @@ namespace MapGridSample
         private readonly List<Positioning> _polygonPositionings = new List<Positioning>();
         public ObservableCollection<GridIndex> GridIndexes { get { return _gridIndexes; } }
 
+        private bool _isDrawing = false;
         private int _level = 1;
         private int _operation = 0;
         private Point _originPoint;
@@ -59,7 +60,7 @@ namespace MapGridSample
 
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (_operation == 0)
+            if (!_isDrawing)
             {
                 Point point = e.GetPosition(GridCanvas);
                 if (e.Delta > 0 && _level < 4)
@@ -271,6 +272,15 @@ namespace MapGridSample
                 TestPolyline.Points.Add(point);
             }
 
+            TestPolygon.Points.Clear();
+            TestPolygon.StrokeThickness = thickness;
+            foreach (Positioning positioning in _polygonPositionings)
+            {
+                Point point = TranformPositioning(positioning);
+                point.X += offsetX;
+                point.Y += offsetY;
+                TestPolygon.Points.Add(point);
+            }
         }
 
         private void DrawHighlightRectangle(int flag1, int flag2, int levelGrid, Brush brush)
@@ -392,6 +402,7 @@ namespace MapGridSample
                     DrawPoint();
                     break;
                 case 2:
+                    _isDrawing = true;
                     CanvasGrid.MouseMove -= DrawLineCanvasGrid_PreviewMouseMove;
                     CanvasGrid.MouseMove += DrawLineCanvasGrid_PreviewMouseMove;
                     CanvasGrid.PreviewMouseLeftButtonDown -= CanvasGrid_PreviewMouseLeftButtonDown;
@@ -403,6 +414,19 @@ namespace MapGridSample
                     TestPolyline.Points.Add(_originPoint);
                     TestPolyline.Points.Add(_originPoint);
                     break;
+                case 3:
+                    _isDrawing = true;
+                    CanvasGrid.MouseMove -= DrawPlaneCanvasGrid_PreviewMouseMove;
+                    CanvasGrid.MouseMove += DrawPlaneCanvasGrid_PreviewMouseMove;
+                    CanvasGrid.PreviewMouseLeftButtonDown -= CanvasGrid_PreviewMouseLeftButtonDown;
+                    CanvasGrid.PreviewMouseLeftButtonDown -= DrawPlaneCanvasGrid_PreviewMouseLeftButtonDown;
+                    CanvasGrid.PreviewMouseLeftButtonDown += DrawPlaneCanvasGrid_PreviewMouseLeftButtonDown;
+                    CanvasGrid.PreviewMouseRightButtonDown -= DrawPlaneCanvasGrid_PreviewMouseRightButtonDown;
+                    CanvasGrid.PreviewMouseRightButtonDown += DrawPlaneCanvasGrid_PreviewMouseRightButtonDown;
+                    ResetShape();
+                    TestPolygon.Points.Add(_originPoint);
+                    TestPolygon.Points.Add(_originPoint);
+                    break;
             }
         }
 
@@ -410,6 +434,7 @@ namespace MapGridSample
         {
             _gridIndexes.Clear();
             _polylinePositionings.Clear();
+            _polygonPositionings.Clear();
             TestEllipse.Opacity = 0d;
             TestPolyline.Points.Clear();
             TestPolygon.Points.Clear();
@@ -496,14 +521,58 @@ namespace MapGridSample
                 _polylinePositionings.Add(TranformPositioning(point) - _offsetPositioning);
             }
 
-            var gridIndexes = GridHelper.GetPolyLineRegion(_polylinePositionings).OrderBy(p => p.Index1).ThenBy(p => p.Index2).ThenBy(p => p.Index3).ThenBy(p => p.Index4);
-            
+            var gridIndexes = GridHelper.GetPolylineRegion(_polylinePositionings).OrderBy(p => p.Index1).ThenBy(p => p.Index2).ThenBy(p => p.Index3).ThenBy(p => p.Index4);
+
             foreach (var gridIndex in gridIndexes)
             {
                 _gridIndexes.Add(gridIndex);
             }
 
             DrawGrid();
+
+            _isDrawing = false;
+        }
+
+        #endregion
+        
+        #region 画面
+
+        private void DrawPlaneCanvasGrid_PreviewMouseLeftButtonDown(object sender, MouseEventArgs e)
+        {
+            Point point = e.GetPosition(RootCanvas);
+            TestPolygon.Points.Add(point);
+        }
+
+        private void DrawPlaneCanvasGrid_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            Point point = e.GetPosition(RootCanvas);
+            TestPolygon.Points.RemoveAt(TestPolygon.Points.Count - 1);
+            TestPolygon.Points.Add(point);
+        }
+
+        private void DrawPlaneCanvasGrid_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            CanvasGrid.ReleaseMouseCapture();
+            CanvasGrid.MouseMove -= DrawPlaneCanvasGrid_PreviewMouseMove;
+            CanvasGrid.PreviewMouseRightButtonDown -= DrawPlaneCanvasGrid_PreviewMouseRightButtonDown;
+            CanvasGrid.PreviewMouseLeftButtonDown -= DrawPlaneCanvasGrid_PreviewMouseLeftButtonDown;
+            CanvasGrid.PreviewMouseLeftButtonDown += CanvasGrid_PreviewMouseLeftButtonDown;
+            MoveRadioButton.IsChecked = true;
+            foreach (Point point in TestPolygon.Points)
+            {
+                _polygonPositionings.Add(TranformPositioning(point) - _offsetPositioning);
+            }
+
+            var gridIndexes = GridHelper.GetPolygonRegion(_polygonPositionings).OrderBy(p => p.Index1).ThenBy(p => p.Index2).ThenBy(p => p.Index3).ThenBy(p => p.Index4);
+
+            //foreach (var gridIndex in gridIndexes)
+            //{
+            //    _gridIndexes.Add(gridIndex);
+            //}
+
+            DrawGrid();
+
+            _isDrawing = false;
         }
 
         #endregion

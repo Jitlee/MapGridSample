@@ -17,7 +17,7 @@ namespace MapGridSample
 
         public override string ToString()
         {
-            return string.Format("({0},{1},{2},{3})", Index1, Index2, Index3, Index4);
+            return string.Format("({0},{1},{2},{3})", Index1, Index2.HasValue ? Index2.Value.ToString() : "NULL", Index3.HasValue ? Index3.Value.ToString() : "NULL", Index4.HasValue ? Index4.Value.ToString() : "NULL");
         }
     }
 }

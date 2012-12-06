@@ -36,11 +36,11 @@ namespace MapGridSample
             return result;
         }
 
-        public int TranformGridIndex(double levelGrid, double levelLongitudeCellSpan, double levelLatitudeCellSpan)
+        public int TranformGridIndex(int levelGrid, double levelLongitudeCellSpan, double levelLatitudeCellSpan)
         {
-            double row = Math.Floor(Latitude / levelLatitudeCellSpan) % levelGrid;
-            double column = Math.Floor(Longitude / levelLongitudeCellSpan) % levelGrid;
-            return (int)(row * levelGrid + column + 1);
+            int row = (int)(Math.Floor(Latitude / levelLatitudeCellSpan) % levelGrid);
+            int column = (int)(Math.Floor(Longitude / levelLongitudeCellSpan) % levelGrid);
+            return (row * levelGrid + column + 1);
         }
     }
 }

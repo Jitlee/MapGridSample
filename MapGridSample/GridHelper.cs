@@ -24,7 +24,7 @@ namespace MapGridSample
 
         #region 获取线的空间索引
 
-        public static IEnumerable<GridIndex> GetPolyLineRegion(IList<Positioning> positionings)
+        public static IEnumerable<GridIndex> GetPolylineRegion(IList<Positioning> positionings)
         {
             var result = new List<GridIndex>();
             var prev = positionings.First();
@@ -75,6 +75,86 @@ namespace MapGridSample
             yield return GetPointGridIndex(endPositioning);
         }
 
+        #endregion
+
+        #region 获取面的空间索引
+
+        public static IEnumerable<GridIndex> GetPolygonRegion(IList<Positioning> positionings)
+        {
+            var result = new List<GridIndex>();
+            if (positionings.Count > 2)
+            {
+                var last = positionings.Last();
+                foreach (Positioning positioning in positionings)
+                {
+                    result.AddRange(GetLineRegion(last, positioning));
+                    last = positioning;
+                }
+            }
+            result.AddRange(GetPolygonContainedRegion(result.ToArray()));
+            return result.Distinct();
+        }
+
+        private static IEnumerable<GridIndex> GetPolygonContainedRegion(IEnumerable<GridIndex> gridIndexes)
+        {
+            var cells = gridIndexes.Select(g => new
+            {
+                Row = ((g.Index1 - 1) / GridConfig.LEVEL1_GRID) * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID * GridConfig.LEVEL4_GRID
+                    + ((g.Index2 - 1) / GridConfig.LEVEL2_GRID) * GridConfig.LEVEL3_GRID * GridConfig.LEVEL4_GRID
+                    + ((g.Index3 - 1) / GridConfig.LEVEL3_GRID) * GridConfig.LEVEL4_GRID
+                    + (g.Index4.Value - 1) / GridConfig.LEVEL4_GRID,
+                Column = ((g.Index1 - 1) % GridConfig.LEVEL1_GRID) * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID * GridConfig.LEVEL4_GRID
+                    + ((g.Index2 - 1) % GridConfig.LEVEL2_GRID) * GridConfig.LEVEL3_GRID * GridConfig.LEVEL4_GRID
+                    + ((g.Index3 - 1) % GridConfig.LEVEL3_GRID) * GridConfig.LEVEL4_GRID
+                    + (g.Index4.Value - 1) % GridConfig.LEVEL4_GRID
+            });
+
+            var rows = cells.Select(c => c.Row.Value).Distinct().OrderBy(c => c);
+
+            foreach (var row in rows)
+            {
+                var columns = cells.Where(c => c.Row == row).Select(c => c.Column.Value).Distinct().OrderBy(c => c).ToArray();
+                var length = columns.Length;
+                if (length > 1)
+                {
+                    if (length % 2 == 0)
+                    {
+                        var currentColumn = columns[0];
+                        var pass = true;
+                        for (int i = 1; i < columns.Length; i++)
+                        {
+                            if (pass)
+                            {
+                                if (columns[i] - currentColumn > 1)
+                                {
+                                    for (var column = currentColumn + 1; column < columns[i]; column++)
+                                    {
+                                        if (row > cells.Where(c=> c.Column == column).Max(c => c.Row))
+                                        {
+                                                
+                                        }
+
+                                        yield return new GridIndex()
+                                        {
+                                            Index1 = row / (GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID * GridConfig.LEVEL4_GRID) % GridConfig.LEVEL1_GRID * GridConfig.LEVEL1_GRID + column / (GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID * GridConfig.LEVEL4_GRID) % GridConfig.LEVEL1_GRID + 1,
+                                            Index2 = row / (GridConfig.LEVEL3_GRID * GridConfig.LEVEL4_GRID) % GridConfig.LEVEL2_GRID * GridConfig.LEVEL2_GRID + column / (GridConfig.LEVEL3_GRID * GridConfig.LEVEL4_GRID) % GridConfig.LEVEL2_GRID + 1,
+                                            Index3 = row / GridConfig.LEVEL4_GRID % GridConfig.LEVEL3_GRID * GridConfig.LEVEL3_GRID + column / GridConfig.LEVEL4_GRID % GridConfig.LEVEL3_GRID + 1,
+                                            Index4 = row % GridConfig.LEVEL4_GRID * GridConfig.LEVEL4_GRID + column % GridConfig.LEVEL4_GRID + 1,
+                                        };
+                                    }
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                            pass = !pass;
+                            currentColumn = columns[1];
+                        }
+                    }
+                }
+            }
+        }
         #endregion
     }
 }

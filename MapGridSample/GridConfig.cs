@@ -38,16 +38,16 @@ namespace MapGridSample
 
         #region 属性
 
-        public readonly static double LongitudeSpan = BOUNDING_BOX_X_MAX - BOUNDING_BOX_X_MIN;
-        public readonly static double LatitudeSpan = BOUNDING_BOX_Y_MAX - BOUNDING_BOX_Y_MIN;
-        public readonly static double Level1LongitudeCellSpan = LongitudeSpan / LEVEL1_GRID;
-        public readonly static double Level1LatitudeCellSpan = LatitudeSpan / LEVEL1_GRID;
-        public readonly static double Level2LongitudeCellSpan = LongitudeSpan / (LEVEL1_GRID * LEVEL2_GRID);
-        public readonly static double Level2LatitudeCellSpan = LatitudeSpan / (LEVEL1_GRID * LEVEL2_GRID);
-        public readonly static double Level3LongitudeCellSpan = LongitudeSpan / (LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID);
-        public readonly static double Level3LatitudeCellSpan = LatitudeSpan / (LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID);
-        public readonly static double Level4LongitudeCellSpan = LongitudeSpan / (LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID * LEVEL4_GRID);
-        public readonly static double Level4LatitudeCellSpan = LatitudeSpan / (LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID * LEVEL4_GRID);
+        public readonly static double XSpan = BOUNDING_BOX_X_MAX - BOUNDING_BOX_X_MIN;
+        public readonly static double YSpan = BOUNDING_BOX_Y_MAX - BOUNDING_BOX_Y_MIN;
+        public readonly static double Level1XCellSpan = XSpan / LEVEL1_GRID;
+        public readonly static double Level1YCellSpan = YSpan / LEVEL1_GRID;
+        public readonly static double Level2XCellSpan = XSpan / (LEVEL1_GRID * LEVEL2_GRID);
+        public readonly static double Level2YCellSpan = YSpan / (LEVEL1_GRID * LEVEL2_GRID);
+        public readonly static double Level3XCellSpan = XSpan / (LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID);
+        public readonly static double Level3YCellSpan = YSpan / (LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID);
+        public readonly static double Level4XCellSpan = XSpan / (LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID * LEVEL4_GRID);
+        public readonly static double Level4YCellSpan = YSpan / (LEVEL1_GRID * LEVEL2_GRID * LEVEL3_GRID * LEVEL4_GRID);
         #endregion
     }
 }

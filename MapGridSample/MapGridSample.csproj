@@ -68,10 +68,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GridCell.cs" />
     <Compile Include="GridIndexWindow.xaml.cs">
       <DependentUpon>GridIndexWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GridRect.cs" />
+    <Compile Include="GridRelationShip.cs" />
+    <Compile Include="GridSegment.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -81,7 +83,7 @@
     <Compile Include="GridConfig.cs" />
     <Compile Include="GridHelper.cs" />
     <Compile Include="GridIndex.cs" />
-    <Compile Include="Positioning.cs" />
+    <Compile Include="GridPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -22,11 +22,11 @@ namespace MapGridSample
         const double WIDTH = 720d;
         const double HEIGHT = 360d;
 
-        private readonly Brush _containsBackground = new SolidColorBrush(Color.FromArgb(0x85, 0x00, 0x80, 0x00));
-        private readonly Brush _level1Brush = new SolidColorBrush(Color.FromArgb(0xff, 0xDC, 0x79, 0x1F));
-        private readonly Brush _level2Brush = new SolidColorBrush(Color.FromArgb(0xff, 0x72, 0x87, 0xC8));
-        private readonly Brush _level3Brush = new SolidColorBrush(Color.FromArgb(0xff, 0xF8, 0x31, 0x0E));
-        private readonly Brush _level4Brush = new SolidColorBrush(Color.FromArgb(0xff, 0xB1, 0xDF, 0xA9));
+        private readonly SolidColorBrush _containsBackground = new SolidColorBrush(Color.FromArgb(0x85, 0x00, 0x80, 0x00));
+        private readonly SolidColorBrush _level1Brush = new SolidColorBrush(Color.FromArgb(0xff, 0xDC, 0x79, 0x1F));
+        private readonly SolidColorBrush _level2Brush = new SolidColorBrush(Color.FromArgb(0xff, 0x72, 0x87, 0xC8));
+        private readonly SolidColorBrush _level3Brush = new SolidColorBrush(Color.FromArgb(0xff, 0xF8, 0x31, 0x0E));
+        private readonly SolidColorBrush _level4Brush = new SolidColorBrush(Color.FromArgb(0xff, 0xB1, 0xDF, 0xA9));
         private readonly ObservableCollection<GridIndex> _gridIndexes = new ObservableCollection<GridIndex>();
         private readonly List<GridPoint> _polylinePositionings = new List<GridPoint>();
         private readonly List<GridPoint> _polygonPositionings = new List<GridPoint>();
@@ -173,8 +173,9 @@ namespace MapGridSample
                 double y = row * cellHeight + beginY;
                 for (int col = -1; col < levelGrid + 1; col++)
                 {
+                    var brush = Brushes.White;
                     double x = col * cellWidth + beginX;
-                    bool isContains = false;
+
                     // 多加 1/2 的值是为了 避免 刚好在边界点因为小数点误差而计算错误
                     gridPoint = TranformPositioning(x - offsetX + cellWidth / 2d, y - offsetY + cellHeight / 2d); 
 
@@ -213,40 +214,57 @@ namespace MapGridSample
 
                                     if (_gridIndexes.Any(g => g.Index1 == lv1Index && g.Index2 == lv2Index && g.Index3 == lv3Index && g.Index4 == lv4Index))
                                     {
-                                        isContains = true;
+                                        brush = _level4Brush;
+                                    }
+                                    else if (_gridIndexes.Any(g => g.Index1 == lv1Index && g.Index2 == lv2Index && g.Index3 == lv3Index && !g.Index4.HasValue))
+                                    {
+                                        brush = _level3Brush;
+                                    }
+                                    else if (_gridIndexes.Any(g => g.Index1 == lv1Index && g.Index2 == lv2Index && !g.Index3.HasValue))
+                                    {
+                                        brush = _level2Brush;
+                                    }
+                                    else if (_gridIndexes.Any(g => g.Index1 == lv1Index && !g.Index2.HasValue))
+                                    {
+                                        brush = _level1Brush;
                                     }
                                 }
                                 else if (_gridIndexes.Any(g => g.Index1 == lv1Index && g.Index2 == lv2Index && g.Index3 == lv3Index))
                                 {
-                                    isContains = true;
+                                    brush = _level3Brush;
+                                }
+                                else if (_gridIndexes.Any(g => g.Index1 == lv1Index && g.Index2 == lv2Index && !g.Index3.HasValue))
+                                {
+                                    brush = _level2Brush;
+                                }
+                                else if (_gridIndexes.Any(g => g.Index1 == lv1Index && !g.Index2.HasValue))
+                                {
+                                    brush = _level1Brush;
                                 }
                             }
                             else if (_gridIndexes.Any(g => g.Index1 == lv1Index && g.Index2 == lv2Index))
                             {
-                                isContains = true;
+                                brush = _level2Brush;
+                            }
+                            else if(_gridIndexes.Any(g => g.Index1 == lv1Index && !g.Index2.HasValue))
+                            {
+                                brush = _level1Brush;
                             }
                         }
                         else if(_gridIndexes.Any(g=> g.Index1 == lv1Index))
                         {
-                            isContains = true;
+                            brush = _level1Brush;
                         }
                         stackPanel.Children.Add(new TextBlock() { Text = ")" });
 
-                        Border border = new Border();
-                        border.Child = stackPanel;
-                        border.Height = cellHeight;
-                        border.Width = cellWidth;
-                        border.SetValue(Canvas.LeftProperty, x);
-                        border.SetValue(Canvas.TopProperty, y);
-                        if (isContains)
-                        {
-                            border.Background = _containsBackground;
-                        }
-                        else
-                        {
-                            border.Background = Brushes.White;
-                        }
-                        GridCanvas.Children.Add(border);
+                        Grid grid = new Grid();
+                        grid.Children.Add(new Rectangle() { Opacity = brush != Brushes.White ? 0.3d : 1d, Fill = brush });
+                        grid.Children.Add(stackPanel);
+                        grid.Height = cellHeight;
+                        grid.Width = cellWidth;
+                        grid.SetValue(Canvas.LeftProperty, x);
+                        grid.SetValue(Canvas.TopProperty, y);
+                        GridCanvas.Children.Add(grid);
                     }
                 }
             }

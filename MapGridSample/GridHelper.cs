@@ -13,10 +13,10 @@ namespace MapGridSample
         public static GridIndex GetPointGridIndex(GridPoint gridPoint)
         {
             GridIndex result = new GridIndex();
-            result.Index1 = gridPoint.TranformGridIndex(GridConfig.LEVEL1_GRID, GridConfig.Level1XCellSpan, GridConfig.Level1YCellSpan);
-            result.Index2 = gridPoint.TranformGridIndex(GridConfig.LEVEL2_GRID, GridConfig.Level2XCellSpan, GridConfig.Level2YCellSpan);
-            result.Index3 = gridPoint.TranformGridIndex(GridConfig.LEVEL3_GRID, GridConfig.Level3XCellSpan, GridConfig.Level3YCellSpan);
-            result.Index4 = gridPoint.TranformGridIndex(GridConfig.LEVEL4_GRID, GridConfig.Level4XCellSpan, GridConfig.Level4YCellSpan);
+            result.Index1 = gridPoint.TranformGridIndex(GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID, GridConfig.Level1XCellSpan, GridConfig.Level1YCellSpan);
+            result.Index2 = gridPoint.TranformGridIndex(GridConfig.LEVEL2_X_GRID, GridConfig.LEVEL2_Y_GRID, GridConfig.Level2XCellSpan, GridConfig.Level2YCellSpan);
+            result.Index3 = gridPoint.TranformGridIndex(GridConfig.LEVEL3_X_GRID, GridConfig.LEVEL3_Y_GRID, GridConfig.Level3XCellSpan, GridConfig.Level3YCellSpan);
+            result.Index4 = gridPoint.TranformGridIndex(GridConfig.LEVEL4_X_GRID, GridConfig.LEVEL4_Y_GRID, GridConfig.Level4XCellSpan, GridConfig.Level4YCellSpan);
             return result;
         }
 
@@ -158,7 +158,9 @@ namespace MapGridSample
                                 {
                                     Index1 = new GridPoint(x + 0.5d * GridConfig.Level1XCellSpan,
                                             y + 0.5d * GridConfig.Level1YCellSpan)
-                                        .TranformGridIndex(GridConfig.LEVEL1_GRID,
+                                        .TranformGridIndex(
+                                            GridConfig.LEVEL1_X_GRID,
+                                            GridConfig.LEVEL1_Y_GRID,
                                             GridConfig.Level1XCellSpan,
                                             GridConfig.Level1YCellSpan)
                                 });
@@ -219,11 +221,15 @@ namespace MapGridSample
                                 result.Add(new GridIndex()
                                 {
                                     Index1 = 
-                                        point.TranformGridIndex(GridConfig.LEVEL1_GRID,
+                                        point.TranformGridIndex(
+                                            GridConfig.LEVEL1_X_GRID,
+                                            GridConfig.LEVEL1_Y_GRID,
                                             GridConfig.Level1XCellSpan,
                                             GridConfig.Level1YCellSpan),
                                     Index2 =
-                                        point.TranformGridIndex(GridConfig.LEVEL2_GRID,
+                                        point.TranformGridIndex(
+                                            GridConfig.LEVEL2_X_GRID,
+                                            GridConfig.LEVEL2_Y_GRID,
                                             GridConfig.Level2XCellSpan,
                                             GridConfig.Level2YCellSpan),
                                 });
@@ -283,15 +289,21 @@ namespace MapGridSample
                                 result.Add(new GridIndex()
                                 {
                                     Index1 =
-                                        point.TranformGridIndex(GridConfig.LEVEL1_GRID,
+                                        point.TranformGridIndex(
+                                            GridConfig.LEVEL1_X_GRID,
+                                            GridConfig.LEVEL1_Y_GRID,
                                             GridConfig.Level1XCellSpan,
                                             GridConfig.Level1YCellSpan),
                                     Index2 =
-                                        point.TranformGridIndex(GridConfig.LEVEL2_GRID,
+                                        point.TranformGridIndex(
+                                            GridConfig.LEVEL2_X_GRID,
+                                            GridConfig.LEVEL2_Y_GRID,
                                             GridConfig.Level2XCellSpan,
                                             GridConfig.Level2YCellSpan),
                                     Index3 =
-                                        point.TranformGridIndex(GridConfig.LEVEL3_GRID,
+                                        point.TranformGridIndex(
+                                            GridConfig.LEVEL3_X_GRID,
+                                            GridConfig.LEVEL3_Y_GRID,
                                             GridConfig.Level3XCellSpan,
                                             GridConfig.Level3YCellSpan),
                                 });

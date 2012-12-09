@@ -88,40 +88,40 @@ namespace MapGridSample
             switch (_level)
             {
                 case 1:
-                    DrawLabel(1, 1, GridConfig.LEVEL1_GRID);
-                    DrawShape(1, 1, GridConfig.LEVEL1_GRID, 1d);
-                    DrawLevelGrid(1, 1, GridConfig.LEVEL1_GRID, _level1Brush, 1d);
+                    DrawLabel(1, 1, 1, 1, GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID);
+                    DrawShape(1, 1, 1, 1, 1d);
+                    DrawLevelGrid(1, 1, 1, 1, GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID, _level1Brush, 1d);
                     break;
                 case 2:
-                    DrawLabel(1, GridConfig.LEVEL1_GRID, GridConfig.LEVEL2_GRID);
-                    DrawShape(1, GridConfig.LEVEL1_GRID, GridConfig.LEVEL2_GRID, 2d);
-                    DrawLevelGrid(1, GridConfig.LEVEL1_GRID, GridConfig.LEVEL2_GRID, _level2Brush, 1d);
-                    DrawLevelGrid(GridConfig.LEVEL1_GRID, 1, GridConfig.LEVEL1_GRID, _level1Brush, 4d);
+                    DrawLabel(1, 1, GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID, GridConfig.LEVEL2_X_GRID, GridConfig.LEVEL2_Y_GRID);
+                    DrawShape(1, 1, GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID, 2d);
+                    DrawLevelGrid(1,1 , GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID, GridConfig.LEVEL2_X_GRID, GridConfig.LEVEL2_Y_GRID, _level2Brush, 1d);
+                    DrawLevelGrid(GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID, 1, 1, GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID, _level1Brush, 4d);
                     break;
                 case 3:
-                    DrawLabel(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID, GridConfig.LEVEL3_GRID);
-                    DrawShape(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID, GridConfig.LEVEL3_GRID, 3d);
-                    DrawLevelGrid(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID, GridConfig.LEVEL3_GRID, _level3Brush, 1d);
-                    DrawLevelGrid(GridConfig.LEVEL2_GRID, GridConfig.LEVEL1_GRID, GridConfig.LEVEL2_GRID, _level2Brush, 4d);
-                    DrawLevelGrid(GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID, 1, GridConfig.LEVEL1_GRID, _level1Brush, 8d);
+                    DrawLabel(1, 1, GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID, GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID, GridConfig.LEVEL3_X_GRID, GridConfig.LEVEL3_Y_GRID);
+                    DrawShape(1, 1, GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID, GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID, 3d);
+                    DrawLevelGrid(1, 1, GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID, GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID, GridConfig.LEVEL3_X_GRID, GridConfig.LEVEL3_Y_GRID, _level3Brush, 1d);
+                    DrawLevelGrid(GridConfig.LEVEL2_X_GRID, GridConfig.LEVEL2_Y_GRID, GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID, GridConfig.LEVEL2_X_GRID, GridConfig.LEVEL2_Y_GRID, _level2Brush, 4d);
+                    DrawLevelGrid(GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID, GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID, 1, 1, GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID, _level1Brush, 8d);
                     break;
                 case 4:
-                    DrawLabel(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID, GridConfig.LEVEL4_GRID);
-                    DrawShape(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID, GridConfig.LEVEL4_GRID, 4d);
-                    DrawLevelGrid(1, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID, GridConfig.LEVEL4_GRID, _level4Brush, 1d);
-                    DrawLevelGrid(GridConfig.LEVEL3_GRID, GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID, GridConfig.LEVEL3_GRID, _level3Brush, 4d);
-                    DrawLevelGrid(GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID, GridConfig.LEVEL1_GRID, GridConfig.LEVEL2_GRID, _level2Brush, 8d);
-                    DrawLevelGrid(GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID, 1, GridConfig.LEVEL1_GRID, _level1Brush, 16d);
+                    DrawLabel(1, 1, GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID * GridConfig.LEVEL3_X_GRID, GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID * GridConfig.LEVEL3_Y_GRID, GridConfig.LEVEL4_X_GRID, GridConfig.LEVEL4_Y_GRID);
+                    DrawShape(1, 1, GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID * GridConfig.LEVEL3_X_GRID, GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID * GridConfig.LEVEL3_Y_GRID, 4d);
+                    DrawLevelGrid(1, 1, GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID * GridConfig.LEVEL3_X_GRID, GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID * GridConfig.LEVEL3_Y_GRID, GridConfig.LEVEL4_X_GRID, GridConfig.LEVEL4_Y_GRID, _level4Brush, 1d);
+                    DrawLevelGrid(GridConfig.LEVEL3_X_GRID, GridConfig.LEVEL3_Y_GRID, GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID, GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID, GridConfig.LEVEL3_X_GRID, GridConfig.LEVEL3_Y_GRID, _level3Brush, 4d);
+                    DrawLevelGrid(GridConfig.LEVEL2_X_GRID * GridConfig.LEVEL3_X_GRID, GridConfig.LEVEL2_Y_GRID * GridConfig.LEVEL3_Y_GRID, GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID, GridConfig.LEVEL2_X_GRID, GridConfig.LEVEL2_Y_GRID, _level2Brush, 8d);
+                    DrawLevelGrid(GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID * GridConfig.LEVEL3_X_GRID, GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID * GridConfig.LEVEL3_Y_GRID, 1, 1, GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID, _level1Brush, 16d);
                     break;
             };
         }
 
-        private void DrawLevelGrid(int flag1, int flag2, int levelGrid, Brush brush, double thickness)
+        private void DrawLevelGrid(int xFlag1, int yFlag1, int xFlag2, int yFlag2, int levelXGrid, int levelYGrid, Brush brush, double thickness)
         {
-            double cellWidth = WIDTH * flag1 / levelGrid;
-            double cellHeight = HEIGHT * flag1 / levelGrid;
-            double offsetX = _offsetPositioning.X * WIDTH * flag1 * flag2 / GridConfig.XSpan;
-            double offsetY = _offsetPositioning.Y * HEIGHT * flag1 * flag2 / GridConfig.YSpan;
+            double cellWidth = WIDTH * xFlag1 / levelXGrid;
+            double cellHeight = HEIGHT * yFlag1 / levelYGrid;
+            double offsetX = _offsetPositioning.X * WIDTH * xFlag1 * xFlag2 / GridConfig.XSpan;
+            double offsetY = _offsetPositioning.Y * HEIGHT * yFlag1 * yFlag2 / GridConfig.YSpan;
             double beginX = offsetX % cellWidth;
             double beginY = offsetY % cellHeight;
             double x1 = -WIDTH;
@@ -129,7 +129,7 @@ namespace MapGridSample
             double y1 = -HEIGHT;
             double y2 = 2d * HEIGHT;
 
-            for (int i = -1; i <= levelGrid + 1; i++)
+            for (int i = -1; i <= levelYGrid + 1; i++)
             {
                 double y = i * cellHeight + beginY;
                 this.GridCanvas.Children.Add(new Line()
@@ -143,7 +143,7 @@ namespace MapGridSample
                 });
             }
 
-            for (int i = -1; i <= levelGrid + 1; i++)
+            for (int i = -1; i <= levelXGrid + 1; i++)
             {
                 double x = i * cellWidth + beginX;
                 this.GridCanvas.Children.Add(new Line()
@@ -158,20 +158,20 @@ namespace MapGridSample
             }
         }
 
-        private void DrawLabel(int flag1, int flag2, int levelGrid)
+        private void DrawLabel(int xFlag1, int yFlag1, int xFlag2, int yFlag2, int levelXGrid, int levelYGrid)
         {
-            double cellWidth = WIDTH * flag1 / levelGrid;
-            double cellHeight = HEIGHT * flag1 / levelGrid;
-            double offsetX = _offsetPositioning.X * WIDTH * flag1 * flag2 / GridConfig.XSpan;
-            double offsetY = _offsetPositioning.Y * HEIGHT * flag1 * flag2 / GridConfig.YSpan;
+            double cellWidth = WIDTH * xFlag1 / levelXGrid;
+            double cellHeight = HEIGHT * yFlag1 / levelYGrid;
+            double offsetX = _offsetPositioning.X * WIDTH * xFlag1 * xFlag2 / GridConfig.XSpan;
+            double offsetY = _offsetPositioning.Y * HEIGHT * yFlag1 * yFlag2 / GridConfig.YSpan;
             double beginX = offsetX % cellWidth;
             double beginY = offsetY % cellHeight;
 
             GridPoint gridPoint = new GridPoint();
-            for(int row = -1; row <= levelGrid + 1;row++)
+            for (int row = -1; row <= levelYGrid + 1; row++)
             {
                 double y = row * cellHeight + beginY;
-                for (int col = -1; col < levelGrid + 1; col++)
+                for (int col = -1; col < levelXGrid + 1; col++)
                 {
                     var brush = Brushes.White;
                     double x = col * cellWidth + beginX;
@@ -190,24 +190,24 @@ namespace MapGridSample
                         stackPanel.HorizontalAlignment = HorizontalAlignment.Center;
                         stackPanel.Children.Add(new TextBlock() { Text = "(" });
 
-                        int lv1Index = gridPoint.TranformGridIndex(GridConfig.LEVEL1_GRID, GridConfig.Level1XCellSpan, GridConfig.Level1YCellSpan);
+                        int lv1Index = gridPoint.TranformGridIndex(GridConfig.LEVEL1_X_GRID, GridConfig.LEVEL1_Y_GRID, GridConfig.Level1XCellSpan, GridConfig.Level1YCellSpan);
 
                         stackPanel.Children.Add(new TextBlock() { Text = lv1Index.ToString(), Foreground = _level1Brush });
 
                         if (_level > 1)
                         {
-                            int lv2Index = gridPoint.TranformGridIndex(GridConfig.LEVEL2_GRID, GridConfig.Level2XCellSpan, GridConfig.Level2YCellSpan);
+                            int lv2Index = gridPoint.TranformGridIndex(GridConfig.LEVEL2_X_GRID, GridConfig.LEVEL2_Y_GRID, GridConfig.Level2XCellSpan, GridConfig.Level2YCellSpan);
                             stackPanel.Children.Add(new TextBlock() { Text = ", " });
                             stackPanel.Children.Add(new TextBlock() { Text = lv2Index.ToString(), Foreground = _level2Brush });
                             if (_level > 2)
                             {
-                                int lv3Index = gridPoint.TranformGridIndex(GridConfig.LEVEL3_GRID, GridConfig.Level3XCellSpan, GridConfig.Level3YCellSpan);
+                                int lv3Index = gridPoint.TranformGridIndex(GridConfig.LEVEL3_X_GRID, GridConfig.LEVEL3_Y_GRID, GridConfig.Level3XCellSpan, GridConfig.Level3YCellSpan);
 
                                 stackPanel.Children.Add(new TextBlock() { Text = ", " });
                                 stackPanel.Children.Add(new TextBlock() { Text = lv3Index.ToString(), Foreground = _level3Brush });
                                 if (_level > 3)
                                 {
-                                    int lv4Index = gridPoint.TranformGridIndex(GridConfig.LEVEL4_GRID, GridConfig.Level4XCellSpan, GridConfig.Level4YCellSpan);
+                                    int lv4Index = gridPoint.TranformGridIndex(GridConfig.LEVEL4_X_GRID, GridConfig.LEVEL4_Y_GRID, GridConfig.Level4XCellSpan, GridConfig.Level4YCellSpan);
 
                                     stackPanel.Children.Add(new TextBlock() { Text = ", " });
                                     stackPanel.Children.Add(new TextBlock() { Text = lv4Index.ToString(), Foreground = _level4Brush });
@@ -270,10 +270,10 @@ namespace MapGridSample
             }
         }
 
-        private void DrawShape(int flag1, int flag2, int levelGrid, double thickness)
+        private void DrawShape(int xFlag1, int yFlag1, int xFlag2, int yFlag2, double thickness)
         {
-            double offsetX = _offsetPositioning.X * WIDTH * flag1 * flag2 / GridConfig.XSpan;
-            double offsetY = _offsetPositioning.Y * HEIGHT * flag1 * flag2 / GridConfig.YSpan;
+            double offsetX = _offsetPositioning.X * WIDTH * xFlag1 * xFlag2 / GridConfig.XSpan;
+            double offsetY = _offsetPositioning.Y * HEIGHT * yFlag1 * yFlag2 / GridConfig.YSpan;
 
             Point ellipsLocation = TranformPositioning(_ellipsePositioning);
             TestEllipse.Width = TestEllipse.Height = _level * 4d;
@@ -301,18 +301,6 @@ namespace MapGridSample
             }
         }
 
-        private void DrawHighlightRectangle(int flag1, int flag2, int levelGrid, Brush brush)
-        {
-            double cellWidth = WIDTH * flag1 / levelGrid;
-            double cellHeight = HEIGHT * flag1 / levelGrid;
-            double offsetX = _offsetPositioning.X * WIDTH * flag1 * flag2 / GridConfig.XSpan;
-            double offsetY = _offsetPositioning.Y * HEIGHT * flag1 * flag2 / GridConfig.YSpan;
-            double beginX = offsetX % cellWidth;
-            double beginY = offsetY % cellHeight;
-
-
-        }
-
         private GridPoint TranformPositioning(Vector vector)
         {
             return TranformPositioning(vector.X, vector.Y);
@@ -333,16 +321,16 @@ namespace MapGridSample
                     gridPoint.Y = GridConfig.YSpan * y / HEIGHT;
                     break;
                 case 2:
-                    gridPoint.X = GridConfig.XSpan * x / (WIDTH * GridConfig.LEVEL1_GRID);
-                    gridPoint.Y = GridConfig.YSpan * y / (HEIGHT * GridConfig.LEVEL1_GRID);
+                    gridPoint.X = GridConfig.XSpan * x / (WIDTH * GridConfig.LEVEL1_X_GRID);
+                    gridPoint.Y = GridConfig.YSpan * y / (HEIGHT * GridConfig.LEVEL1_Y_GRID);
                     break;
                 case 3:
-                    gridPoint.X = GridConfig.XSpan * x / (WIDTH * GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID);
-                    gridPoint.Y = GridConfig.YSpan * y / (HEIGHT * GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID);
+                    gridPoint.X = GridConfig.XSpan * x / (WIDTH * GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID);
+                    gridPoint.Y = GridConfig.YSpan * y / (HEIGHT * GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID);
                     break;
                 case 4:
-                    gridPoint.X = GridConfig.XSpan * x / (WIDTH * GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID);
-                    gridPoint.Y = GridConfig.YSpan * y / (HEIGHT * GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID);
+                    gridPoint.X = GridConfig.XSpan * x / (WIDTH * GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID * GridConfig.LEVEL3_X_GRID);
+                    gridPoint.Y = GridConfig.YSpan * y / (HEIGHT * GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID * GridConfig.LEVEL3_Y_GRID);
                     break;
             };
             return gridPoint;
@@ -358,16 +346,16 @@ namespace MapGridSample
                     point.Y = gridPoint.Y * HEIGHT / GridConfig.YSpan;
                     break;
                 case 2:
-                    point.X = gridPoint.X * WIDTH * GridConfig.LEVEL1_GRID / GridConfig.XSpan;
-                    point.Y = gridPoint.Y * HEIGHT * GridConfig.LEVEL1_GRID / GridConfig.YSpan;
+                    point.X = gridPoint.X * WIDTH * GridConfig.LEVEL1_X_GRID / GridConfig.XSpan;
+                    point.Y = gridPoint.Y * HEIGHT * GridConfig.LEVEL1_Y_GRID / GridConfig.YSpan;
                     break;
                 case 3:
-                    point.X = gridPoint.X * WIDTH * GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID / GridConfig.XSpan;
-                    point.Y = gridPoint.Y * HEIGHT * GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID / GridConfig.YSpan;
+                    point.X = gridPoint.X * WIDTH * GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID / GridConfig.XSpan;
+                    point.Y = gridPoint.Y * HEIGHT * GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID / GridConfig.YSpan;
                     break;
                 case 4:
-                    point.X = gridPoint.X * WIDTH * GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID / GridConfig.XSpan;
-                    point.Y = gridPoint.Y * HEIGHT * GridConfig.LEVEL1_GRID * GridConfig.LEVEL2_GRID * GridConfig.LEVEL3_GRID / GridConfig.YSpan;
+                    point.X = gridPoint.X * WIDTH * GridConfig.LEVEL1_X_GRID * GridConfig.LEVEL2_X_GRID * GridConfig.LEVEL3_X_GRID / GridConfig.XSpan;
+                    point.Y = gridPoint.Y * HEIGHT * GridConfig.LEVEL1_Y_GRID * GridConfig.LEVEL2_Y_GRID * GridConfig.LEVEL3_Y_GRID / GridConfig.YSpan;
                     break;
             };
             return point;

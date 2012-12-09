@@ -45,11 +45,11 @@ namespace MapGridSample
             return result;
         }
 
-        public int TranformGridIndex(int levelGrid, double levelXCellSpan, double levelYCellSpan)
+        public int TranformGridIndex(int levelXGrid, int levelYGrid, double levelXCellSpan, double levelYCellSpan)
         {
-            int row = (int)(Math.Floor(Y / levelYCellSpan) % levelGrid);
-            int column = (int)(Math.Floor(X / levelXCellSpan) % levelGrid);
-            return (row * levelGrid + column + 1);
+            int row = (int)(Math.Floor(Y / levelYCellSpan) % levelYGrid);
+            int column = (int)(Math.Floor(X / levelXCellSpan) % levelXGrid);
+            return (row * levelXGrid + column + 1);
         }
     }
 }
